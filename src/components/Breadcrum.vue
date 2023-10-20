@@ -1,35 +1,48 @@
+<script setup>
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+
+    const route = useRoute();
+    const breadcrumbs = computed(() => {
+      console.log(route);
+      const crumbs = [{ to: checkRouteToCrumbs(route), label: checkLabelToCrumbs(route) }];
+      const matchedRoutes = route.matched;
+
+      if (Object.keys(route.params).length === 1 && Object.keys(route.params) === 'id'){
+        // crumbs[0].
+      }
+
+      if (matchedRoutes.length > 1) {
+        matchedRoutes.forEach((route, index) => {
+          if (index > 0) {
+            crumbs.push({ to: route.path, label: route.name });
+          }
+        });
+      }
+      return crumbs;
+    });
+
+    function checkRouteToCrumbs(route){
+      return route.name === 'characters-details' ? '/characters' : route.path
+    }
+    function checkLabelToCrumbs(route){
+      return route.name === 'characters-details' ? 'characters' : route.name
+    }
+
+</script>
+
 <template>
-    <nav>
-      <ion-icon name="home"></ion-icon>
-      <ul>
-        <li v-for="(crumb, index) in breadcrumbs" :key="index">
-          <router-link :to="crumb.to">{{ crumb.label }}</router-link>
-        </li>
-      </ul>
-    </nav>
-  </template>
+  <nav>
+    <ion-icon name="home"></ion-icon>
+    <ul>
+      <li v-for="(crumb, index) in breadcrumbs" :key="index">
+        <router-link :to="crumb.to">{{ crumb.label }}</router-link>
+      </li>
+    </ul>
+  </nav>
+</template>
   
-  <script>
-  export default {
-    computed: {
-      breadcrumbs() {
-        const crumbs = [{ to: this.$route.path, label: this.$route.name }];
-        console.log(this.$route);
-        const matchedRoutes = this.$route.matched;
-  
-        if (matchedRoutes.length > 1) {
-          matchedRoutes.forEach((route, index) => {
-            if (index > 0) {
-              crumbs.push({ to: route.path, label: route.name });
-            }
-          });
-        }
-  
-        return crumbs;
-      },
-    },
-  };
-  </script>
+
 
 <style lang="scss" scoped>
   nav{
